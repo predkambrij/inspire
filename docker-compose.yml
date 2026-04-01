@@ -1,0 +1,20 @@
+services:
+  inspire:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM python:3.12-slim
+        WORKDIR /app
+        RUN pip install --no-cache-dir flask requests
+        COPY inspire.py /app/inspire.py
+        EXPOSE 5050
+        CMD ["python", "inspire.py"]
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./seed.dat:/app/seed.dat
+      - ./quotes.dat:/app/quotes.dat
+      - ./quotes2.dat:/app/quotes2.dat
+    env_file:
+      - .env
+    restart: unless-stopped
