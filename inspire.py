@@ -9,7 +9,7 @@ QUOTES2_FILE = os.path.join(BASE_DIR, "quotes2.dat")
 API_URL = os.environ.get("API_URL", "https://api.z.ai/api/coding/paas/v4/chat/completions")
 API_KEY = os.environ["API_KEY"]
 MODEL = os.environ.get("MODEL", "glm-4.7")
-MAX_QUOTES = 100
+MAX_QUOTES = 200
 
 
 def read_lines(filepath):
@@ -33,9 +33,9 @@ def format_quote(line):
 
 def call_llm(n, context_lines, topic):
     context = "\n".join(f"- {quote_text(q)}" for q in context_lines)
-    prompt = (f"Generate exactly {n} unique, original inspirational quotes about {topic}. "
-              f"One per line, no numbering, no bullets, no extra text. "
-              f"Do NOT repeat these:\n{context}\n\nReturn ONLY the quotes, one per line.")
+    prompt = (
+        f"Generate {n} unique inspiring quotes about {topic}, one per line, with no extra text."
+        f"Example quotes:\n{context}")
     headers = {"Content-Type": "application/json", "Accept-Language": "en-US,en",
                "Authorization": f"Bearer {API_KEY}"}
     payload = {"model": MODEL, "messages": [
@@ -60,23 +60,20 @@ def call_llm(n, context_lines, topic):
 
 
 def do_generate(n, topic, mode):
-    seed = read_lines(SEED_FILE)
     if mode == 1:
         existing = read_lines(QUOTES_FILE)
-        context = (seed + existing)[-50:]
+        if not existing:
+            write_lines(QUOTES_FILE, read_lines(SEED_FILE))
+            existing = read_lines(QUOTES_FILE)
+        context = existing[-MAX_QUOTES:]
         new_quotes = call_llm(n, context, topic)
-        write_lines(QUOTES_FILE, (existing + new_quotes)[-MAX_QUOTES:])
+        write_lines(QUOTES_FILE, (existing + new_quotes))
     else:
-        if not read_lines(QUOTES2_FILE):
-            write_lines(QUOTES2_FILE, seed)
-        all_lines = read_lines(QUOTES2_FILE)
-        seed_count = len(seed)
-        generated = all_lines[seed_count:]
-        max_gen_ctx = max(50 - seed_count, 0)
-        context = seed + generated[-max_gen_ctx:]
+        seed = read_lines(SEED_FILE)
+        existing = read_lines(QUOTES2_FILE)
+        context = seed + existing[-(MAX_QUOTES - len(seed)):]
         new_quotes = call_llm(n, context, topic)
-        generated = (generated + new_quotes)[-(MAX_QUOTES - seed_count):]
-        write_lines(QUOTES2_FILE, seed + generated)
+        write_lines(QUOTES2_FILE, (existing + new_quotes))
     return new_quotes
 
 

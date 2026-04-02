@@ -1,6 +1,7 @@
 services:
   inspire:
     build:
+      network: host
       context: .
       dockerfile_inline: |
         FROM python:3.12-slim
