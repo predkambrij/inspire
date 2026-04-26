@@ -1,4 +1,5 @@
-import os, re, time, requests
+import os, re, time, random
+import requests
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -32,6 +33,7 @@ def format_quote(line):
 
 
 def call_llm(n, context_lines, topic):
+    random.shuffle(context_lines)
     context = "\n".join(f"- {quote_text(q)}" for q in context_lines)
     prompt = (
         f"Generate {n} unique inspiring quotes about {topic}, one per line, with no extra text."
@@ -79,7 +81,7 @@ def do_generate(n, topic, mode):
 
 def parse_body():
     body = request.get_json(force=True) if request.data else {}
-    return body.get("n", 5), body.get("topic", "life, motivation, and success")
+    return body.get("n", 5), body.get("topic", "discipline, life, motivation, and success")
 
 
 def quotes_file(mode):

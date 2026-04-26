@@ -14,7 +14,7 @@ docker compose up -d
 
 ## API
 
-### Mode 1 — Simple rotation (`quotes.dat`, keeps last 100)
+### Mode 1 — Simple rotation (`quotes.dat`, keeps last `MAX_QUOTES`)
 
 ```bash
 # Generate 5 quotes (default), save only
@@ -27,7 +27,7 @@ curl -X POST http://localhost:5050/generate-and-return -H "Content-Type: applica
 curl http://localhost:5050/quotes?n=5
 ```
 
-### Mode 2 — Seed-pinned rotation (`quotes2.dat`, seed stays at top, generated rotate after)
+### Mode 2 — Seed-pinned rotation (`quotes2.dat`, seed stays at top, generated rotate after `MAX_QUOTES` reached)
 
 ```bash
 # Generate 5 quotes, save only
