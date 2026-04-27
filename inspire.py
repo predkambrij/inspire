@@ -14,7 +14,7 @@ MAX_QUOTES = 200
 
 
 def read_lines(filepath):
-    return [l.strip() for l in open(filepath) if l.strip()] if os.path.exists(filepath) else []
+    return [l.strip() for l in open(filepath) if l.strip() and not l.strip().startswith("//")] if os.path.exists(filepath) else []
 
 
 def write_lines(filepath, lines):
