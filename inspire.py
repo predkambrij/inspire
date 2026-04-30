@@ -106,7 +106,7 @@ def do_generate(n, topic, mode):
 def parse_body():
     # silent=True returns None instead of raising 400 on missing/malformed body
     body = request.get_json(force=True, silent=True) or {}
-    return body.get("n", 5), body.get("topic", "discipline, life, motivation, and success"), body.get("mode", 1)
+    return body.get("n", 5), body.get("topic", "discipline, life, motivation, success, courage, resilience"), body.get("mode", 1)
 
 
 def quotes_file(mode):
