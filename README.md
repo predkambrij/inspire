@@ -1,49 +1,47 @@
 # Inspire
 
-LLM-powered infinite inspirational quote generator. Generates unique quotes via API, stores them in flat files, and serves them over REST.
-
-> This app was built with AI-assisted software
+LLM-powered infinite inspirational quote generator. Generates unique quotes via API, stores them in flat files, and serves them over REST. This app was built with AI-assisted software
 
 ## Setup
 
 ```bash
-touch quotes.dat quotes2.dat
+touch quotes.dat quotes2.dat quotes3.dat
 cp .env.sample .env # and configure API key
 docker compose up -d
 ```
 
+## Modes
+
+| Mode | File | Context used for generation |
+|------|------|-----------------------------|
+| 1 | `quotes.dat` | seeds + quotes.dat, use last `MAX_QUOTES` |
+| 2 | `quotes2.dat` | seeds pinned + most recent generated up to `MAX_QUOTES` combined|
+| 3 | `quotes3.dat` | seeds only (`seed.dat` + `seed2.dat`) |
+
 ## API
 
-### Mode 1 — Simple rotation (`quotes.dat`, keeps last `MAX_QUOTES`)
+All endpoints accept an optional JSON body with `n` (count, default 5), `topic` (default "discipline, life, motivation, and success"), and `mode` (1/2/3, default 1).
 
 ```bash
-# Generate 5 quotes (default), save only
+# Generate and save quotes
 curl -X POST http://localhost:5050/generate
+curl -X POST http://localhost:5050/generate -d '{"n":5,"topic":"courage","mode":2}'
+curl -X POST http://localhost:5050/generate -d '{"n":5,"topic":"courage","mode":3}'
 
-# Generate 3 quotes on a topic, return them
-curl -X POST http://localhost:5050/generate-and-return -H "Content-Type: application/json" -d '{"n":3,"topic":"courage"}'
+# Generate and return quotes
+curl -X POST http://localhost:5050/generate-and-return
+curl -X POST http://localhost:5050/generate-and-return -d '{"n":5,"topic":"resilience","mode":2}'
+curl -X POST http://localhost:5050/generate-and-return -d '{"n":5,"topic":"resilience","mode":3}'
 
-# Get last 5 quotes
-curl http://localhost:5050/quotes?n=5
+# Get last N saved quotes
+curl "http://localhost:5050/quotes"
+curl "http://localhost:5050/quotes?n=5&mode=2"
+curl "http://localhost:5050/quotes?n=5&mode=3"
 ```
-
-### Mode 2 — Seed-pinned rotation (`quotes2.dat`, seed stays at top, generated rotate after `MAX_QUOTES` reached)
-
-```bash
-# Generate 5 quotes, save only
-curl -X POST http://localhost:5050/generate2
-
-# Generate 3 quotes, return them
-curl -X POST http://localhost:5050/generate2-and-return -H "Content-Type: application/json" -d '{"n":3}'
-
-# Get last 10 quotes
-curl http://localhost:5050/quotes2?n=10
-```
-
 
 ## File format
 
-Quotes use `author || quote` format. LLM-generated quotes have no author (`|| quote`). Authors are stripped when seeding the LLM to avoid repetition.
+Quotes use `author || quote` format. LLM-generated quotes have no author. Authors are stripped from context when prompting the LLM.
 
 ```
 Steve Jobs || The only way to do great work is to love what you do.

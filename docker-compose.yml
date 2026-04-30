@@ -14,8 +14,10 @@ services:
       - "5050:5050"
     volumes:
       - ./seed.dat:/app/seed.dat
+      - ./seed2.dat:/app/seed2.dat
       - ./quotes.dat:/app/quotes.dat
       - ./quotes2.dat:/app/quotes2.dat
+      - ./quotes3.dat:/app/quotes3.dat
     env_file:
       - .env
     restart: unless-stopped
