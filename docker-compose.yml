@@ -18,6 +18,6 @@ services:
       - ./quotes.dat:/app/quotes.dat
       - ./quotes2.dat:/app/quotes2.dat
       - ./quotes3.dat:/app/quotes3.dat
-    env_file:
-      - .env
+      - ./outfile.txt:/app/outfile.txt
+      - ./config.py:/app/config.py:ro
     restart: unless-stopped

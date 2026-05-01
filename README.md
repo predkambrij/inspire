@@ -5,8 +5,8 @@ LLM-powered infinite inspirational quote generator. Generates unique quotes via 
 ## Setup
 
 ```bash
-touch quotes.dat quotes2.dat quotes3.dat
-cp .env.sample .env # and configure API key
+touch quotes.dat quotes2.dat quotes3.dat outfile.txt
+cp config.py.sample config.py # and configure API keys
 docker compose up -d
 ```
 
@@ -20,23 +20,29 @@ docker compose up -d
 
 ## API
 
-All endpoints accept an optional JSON body with `n` (count, default 5), `topic` (default "discipline, life, motivation, and success"), and `mode` (1/2/3, default 1).
+All endpoints accept an optional JSON body with `n` (count, default 5), `topics` (default "discipline, life, motivation, and success"), and `mode` (1/2/3, default 1).
 
 ```bash
 # Generate and save quotes
 curl -X POST http://localhost:5050/generate
-curl -X POST http://localhost:5050/generate -d '{"n":5,"topic":"courage","mode":2}'
-curl -X POST http://localhost:5050/generate -d '{"n":5,"topic":"courage","mode":3}'
+curl -X POST http://localhost:5050/generate -d '{"n":5,"topics":"courage","mode":2}'
+curl -X POST http://localhost:5050/generate -d '{"provider_model":"zai-glm-5","n":5,"topics":"courage","mode":3}'
 
 # Generate and return quotes
 curl -X POST http://localhost:5050/generate-and-return
-curl -X POST http://localhost:5050/generate-and-return -d '{"n":5,"topic":"resilience","mode":2}'
-curl -X POST http://localhost:5050/generate-and-return -d '{"n":5,"topic":"resilience","mode":3}'
+curl -X POST http://localhost:5050/generate-and-return -d '{"n":5,"topics":"resilience","mode":2}'
+curl -X POST http://localhost:5050/generate-and-return -d '{"provider_model":"zai-glm-5","n":5,"topics":"resilience","mode":3}'
+
+# Generate and return quotes for multiple provider calls
+curl -sX POST http://localhost:5050/generate-and-return-multiple -d '{"providers":["zai-glm-5","zai-glm-5","google/gemini-3.1-pro-preview"],"n":5,"mode":3}' | jq -r 'to_entries[] | "provider \(.key + 1) (\(.value.provider_model)):\n" + (.value.quotes | map("- " + .quote) | join("\n")) + "\n"'
 
 # Get last N saved quotes
 curl "http://localhost:5050/quotes"
 curl "http://localhost:5050/quotes?n=5&mode=2"
 curl "http://localhost:5050/quotes?n=5&mode=3"
+
+# Get the latest multiple-provider text output
+curl "http://localhost:5050/quotes?mode=multiple"
 ```
 
 ## File format

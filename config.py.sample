@@ -1,0 +1,38 @@
+DEFAULT_PROVIDER_MODEL = "zai-glm-5"
+DEBUG_LOGGING = True  # Enable full LLM request/response logging
+
+PROVIDER_MODELS = {
+    "zai-glm-5": { # https://docs.z.ai/guides/capabilities/thinking-mode (is enabled by default, no effort seems to be configured)
+        "api_url": "https://api.z.ai/api/coding/paas/v4/chat/completions",
+        "api_key": "your_api_key_here",
+        "model": "glm-5",
+        #"effort": "thinking-disabled", # default enabled
+    },
+    "deepseek/deepseek-v4-pro": {
+        "api_url": "https://api.novita.ai/openai/chat/completions",
+        "api_key": "your_api_key_here",
+        "model": "deepseek/deepseek-v4-pro",
+        "effort": "thinking-max" #  thinking-disabled thinking-high thinking-max
+    },
+}
+
+# openrouter models
+for model, provider, effort in [
+    ("openai/gpt-5.5", "openai", "xhigh"), # none low medium high xhigh
+    ("moonshotai/kimi-k2.6", "moonshotai", "reasoning-enabled"), # reasoning-disabled
+    ("anthropic/claude-opus-4.6", "anthropic", "reasoning-max"), # reasoning-enabled reasoning-high reasoning-max // or reasoning-disabled
+    ("anthropic/claude-opus-4.7", "anthropic", "reasoning-max"), # reasoning-enabled reasoning-xhigh reasoning-max // or reasoning-disabled
+    ("google/gemini-3.1-pro-preview", "google-vertex", "high"), # low medium high
+    ("minimax/minimax-m2.7", "minimax", "reasoning-enabled"),
+    ("x-ai/grok-4.3", "xai", "reasoning-enabled"),
+]:
+    PROVIDER_MODELS[model] = {
+        "api_url": "https://openrouter.ai/api/v1/chat/completions",
+        "api_key": "your_api_key_here",
+        "model": model,
+        "provider": {
+            "order": [provider],
+            "allow_fallbacks": False,
+        },
+        "effort": effort,
+    }

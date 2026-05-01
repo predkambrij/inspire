@@ -1,4 +1,5 @@
-.env
+config.py
 quotes.dat
 quotes2.dat
 quotes3.dat
+outfile.txt
