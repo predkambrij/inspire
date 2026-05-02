@@ -9,7 +9,6 @@ PROVIDERS='[
   "deepseek/deepseek-v4-pro",
   "minimax/minimax-m2.7",
   "openai/gpt-5.5",
-  "anthropic/claude-opus-4.6",
   "anthropic/claude-opus-4.7",
   "google/gemini-3.1-pro-preview",
   "x-ai/grok-4.3"
