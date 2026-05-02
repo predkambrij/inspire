@@ -19,5 +19,5 @@ if [ -f "$outFile" ]; then
     cp "$outFile" "${outFile%.txt}_$(date +%Y%m%d_%H%M%S).txt"
 fi
 
-curl -sX POST http://localhost:5050/generate-and-return-multiple -d "{\"providers\":${PROVIDERS},\"n\":5,\"mode\":3}" \
+curl -sX POST http://localhost:5050/generate-and-return-multiple -d "{\"providers\":${PROVIDERS},\"n\":5,\"topics\":\"unspecified\",\"mode\":3}" \
     | jq -r 'to_entries[] | "provider \(.key + 1) (\(.value.provider_model)):\n" + (.value.quotes | map("- " + .quote) | join("\n")) + "\n"' > "$outFile"

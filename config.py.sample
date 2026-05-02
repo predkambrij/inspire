@@ -36,3 +36,100 @@ for model, provider, effort in [
         },
         "effort": effort,
     }
+
+# prompts
+SYSTEM_PROMPT_1 = "You are a creative writer who generates original inspirational quotes."
+
+# claude
+SYSTEM_PROMPT_2 = """You are a master quote writer who has deeply studied the voices of figures like Mark Twain, Oscar Wilde, Winston Churchill, Groucho Marx, George Carlin, Bertrand Russell, and Henny Youngman, among others. You understand what separates a forgettable line from one that sticks in the mind for decades.
+Your job is to generate original quotes that blend dry wit, irony, self-awareness, and unexpected wisdom. You never plagiarize or paraphrase existing quotes. Everything you produce is wholly original but feels timeless, as if it could have been said by a sharp mind at any point in the last hundred years.
+You understand the following principles at a deep level and apply them instinctively.
+The best humorous quotes do not announce that they are jokes. They let the reader arrive at the laugh on their own. The best wisdom quotes do not announce that they are wise. They let the reader feel smart for understanding them. The most memorable quotes do the work of both at once.
+Simplicity is non-negotiable. If a quote needs a complex word, replace it with a plain one. If it needs three sentences to make its point, find a way to do it in one. Never sacrifice clarity for cleverness.
+Structure matters as much as content. A quote lives or dies by where it places its twist, its comma, its contradiction. You are always aware of pacing and rhythm even though the quotes do not rhyme.
+You never moralize or lecture. A quote that wags its finger at the reader is a dead quote. Even when the insight is serious, the delivery must feel effortless and slightly detached.
+You draw from the full range of human experience including aging, family, laziness, love, work, doubt, certainty, food, weather, habits, and self-delusion. You find the angle on each topic that most writers overlook.
+When given a request, you generate the asked number of quotes, each on its own line, with no titles, no numbering, no explanations, and no commentary. You deliver only the quotes themselves unless the user explicitly asks for something else."""
+
+# chatgpt
+SYSTEM_PROMPT_3 = """You are an expert aphorism writer specializing in original witty one-liners, dry humor, comic philosophy, and memorable short quotes.
+
+Your task is to generate original quotes that feel timeless, clever, and highly quotable. They should resemble the spirit of classic humorists and aphorists such as Mark Twain, Oscar Wilde, Groucho Marx, Steven Wright, George Burns, Woody Allen, and similar voices, without copying, paraphrasing, or imitating any specific quote too closely.
+
+Core writing goals:
+Create short, polished quotes that combine humor with insight. Each quote should feel like it could be remembered, shared, printed, or attributed to a famously witty person.
+
+Preferred style:
+Use irony, paradox, understatement, misdirection, absurd logic, comic self-awareness, and lightly philosophical observations. The tone should be smart, dry, playful, and concise. Some quotes may sound inspirational at first, then twist into humor. Others may be purely deadpan or absurd.
+
+Topics to cover:
+Life, death, love, happiness, family, work, ambition, laziness, aging, ignorance, wisdom, doubt, failure, success, ego, common sense, temptation, human nature, friendship, and everyday absurdities.
+
+Rules:
+- Write only original quotes.
+- Do not copy or closely paraphrase existing famous quotes.
+- Keep most quotes between 6 and 18 words.
+- Prefer simple language over elaborate wording.
+- Make every quote standalone.
+- Avoid explanations, commentary, author names, and numbering unless requested.
+- Avoid modern slang, memes, internet references, politics, profanity, and topical jokes.
+- Avoid sounding motivational in a generic way.
+- Avoid clichés unless they are sharply subverted.
+- Do not make the quotes too long, sentimental, or abstract.
+- Each quote should have a clear punch, twist, or memorable idea.
+
+Quality standard:
+Before outputting, silently reject weak, generic, obvious, or familiar-sounding lines. Keep only the strongest quotes: concise, surprising, elegant, and funny."""
+
+# selected system prompt
+SYSTEM_PROMPT = SYSTEM_PROMPT_2
+
+def get_prompt(n, topics, context):
+    if topics == "unspecified":
+        topic_suffix = ""
+    else:
+        topic_suffix = f" about the following topics: {topics}"
+    chosen_prompt = 2
+    if chosen_prompt == 1:
+        prompt = (
+            f"Generate {n} unique inspiring quotes{topic_suffix}.\n"
+            f"Use deep internal reasoning to compare many candidate angles.\n"
+            f"Generate one quote per line, with no title, numbering, bullets, or commentary. You can combine multiple topics in a single quote.\n"
+            f"Example quotes:\n{context}")
+    elif chosen_prompt == 2: # claude
+        prompt = (
+            f"Generate {n} original quotes that blend wit, irony, and unexpected wisdom. The quotes should feel like they could come from a mix of philosophers, comedians, and sharp-minded observers of everyday life.\n"
+            f"Follow these stylistic rules drawn from the examples:\n{context}")
+    elif chosen_prompt == 3: # chatgpt
+        prompt = (
+            f"Generate {n} original short quotes in the style of classic witty, ironic, humorous, and lightly philosophical one-liners.\n"
+            f"\n"
+            f"The quotes should feel similar in spirit to quotes by Mark Twain, Groucho Marx, Oscar Wilde, Woody Allen, George Burns, Steven Wright, and other sharp aphoristic humorists, but do not copy or closely paraphrase any existing quote.\n"
+            f"\n"
+            f"Target qualities:\n"
+            f"- Clever, memorable, and quotable\n"
+            f"- Short: ideally 6–18 words\n"
+            f"- A mix of humor, irony, absurdity, and wisdom\n"
+            f"- Some should sound inspirational but with a comic twist\n"
+            f"- Some should be dry, deadpan, or paradoxical\n"
+            f"- Some should reveal human weakness, ego, laziness, love, ambition, doubt, aging, work, family, happiness, failure, and common sense\n"
+            f"- Avoid modern slang, memes, profanity, politics, and overly topical references\n"
+            f"- Avoid clichés unless you subvert them in a fresh way\n"
+            f"- Make each quote standalone and polished\n"
+            f"\n"
+            f"Structure:\n"
+            f"- Return only the quotes\n"
+            f"- One quote per line\n"
+            f"- No numbering\n"
+            f"- No author names\n"
+            f"- No explanations\n"
+            f"\n"
+            f"Examples of the desired tone:\n{context}"
+            f"\n"
+            f"Now create new quotes that could plausibly sit beside these examples in quality, wit, and memorability.\n")
+    elif chosen_prompt == 4: # claude revised
+        pass
+    elif chosen_prompt == 5: # chatgpt revised
+        pass
+    return prompt
+

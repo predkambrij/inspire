@@ -2,7 +2,7 @@ import os, re, time, random, json
 import requests
 from flask import Flask, request, jsonify
 from config import DEFAULT_PROVIDER_MODEL, PROVIDER_MODELS, DEBUG_LOGGING
-
+from config import SYSTEM_PROMPT, get_prompt
 
 app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +13,6 @@ QUOTES2_FILE = os.path.join(BASE_DIR, "quotes2.dat")
 QUOTES3_FILE = os.path.join(BASE_DIR, "quotes3.dat")
 OUTFILE_TXT = os.path.join(BASE_DIR, "outfile.txt")
 MAX_QUOTES = 200
-SYSTEM_PROMPT = "You are a creative writer who generates original inspirational quotes."
 
 
 def read_lines(filepath):
@@ -122,11 +121,7 @@ def parse_llm_response(response, provider_model):
 def call_llm(n, context_lines, topics, provider_model):
     random.shuffle(context_lines)
     context = "\n".join(f"- {quote_text(q)}" for q in context_lines)
-    prompt = (
-        f"Generate {n} unique inspiring quotes about the following topics: {topics}\n"
-        f"Use deep internal reasoning to compare many candidate angles, avoid cliches.\n"
-        f"Generate one quote per line, with no title, numbering, bullets, or commentary. You can combine multiple topics in a single quote.\n"
-        f"Example quotes:\n{context}")
+    prompt = get_prompt(n, topics, context)
     return parse_llm_response(post_with_retry(prompt, provider_model), provider_model)
 
 def do_generate(n, topics, mode, provider_model):

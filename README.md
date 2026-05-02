@@ -7,7 +7,7 @@ LLM-powered infinite inspirational quote generator. Generates unique quotes via 
 ```bash
 touch quotes.dat quotes2.dat quotes3.dat outfile.txt
 cp config.py.sample config.py # and configure API keys
-docker compose up -d
+docker compose up -d --force-recreate --build
 ```
 
 ## Modes
@@ -20,7 +20,10 @@ docker compose up -d
 
 ## API
 
-All endpoints accept an optional JSON body with `n` (count, default 5), `topics` (default "discipline, life, motivation, and success"), and `mode` (1/2/3, default 1).
+All endpoints accept an optional JSON body with:
+- `n`: count, default 5
+- `topics`: default "discipline, life, motivation, and success", it can be also "unspecified".
+- `mode` (1/2/3, default 1).
 
 ```bash
 # Generate and save quotes
