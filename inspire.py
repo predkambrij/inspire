@@ -101,7 +101,7 @@ def post_with_retry(prompt, provider_model, retries=5):
         response = requests.post(config["api_url"], headers=headers, json=payload, timeout=600)
         if DEBUG_LOGGING:
             print(f"[DEBUG LLM RESPONSE] Status: {response.status_code} Body: {json.dumps(response.json(), indent=2)}", flush=True)
-        if response.status_code == 429 or response.status_code == 502:
+        if response.status_code in [429, 500, 502]:
             time.sleep(2 ** attempt)
             continue
         response.raise_for_status()
@@ -150,7 +150,7 @@ def parse_body():
     body = request.get_json(force=True, silent=True) or {}
     return (
         body.get("n", 5),
-        body.get("topics", "discipline, life, motivation, success, courage, resilience"),
+        body.get("topics", "unspecified"),
         body.get("mode", 1),
         body.get("provider_model", DEFAULT_PROVIDER_MODEL),
         body.get("providers", []))
