@@ -22,7 +22,7 @@ docker compose up -d --force-recreate --build
 
 All endpoints accept an optional JSON body with:
 - `n`: count, default 5
-- `topics`: default "discipline, life, motivation, and success", it can be also "unspecified".
+- `topics`: default - themes defined in system prompt
 - `mode` (1/2/3, default 1).
 
 ```bash
