@@ -91,7 +91,7 @@ When given a request, generate the asked number of quotes, each on its own line,
 def get_prompt(n, topics, context):
     topic_suffix = "" if (topics == "unspecified" or topics == "") else f" about {topics}"
 
-    chosen_prompt = 6
+    chosen_prompt = 7
     if chosen_prompt == 6:
         prompt = (
             f"Generate {n} quotes.{topic_suffix}\n")
