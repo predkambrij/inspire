@@ -5,14 +5,18 @@ outFile="$scriptDir/outfile.txt"
 
 PROVIDERS='[
   "moonshotai/kimi-k2.6",
-  "zai-glm-5",
-  "deepseek/deepseek-v4-pro",
   "minimax/minimax-m2.7",
-  "openai/gpt-5.5",
-  "anthropic/claude-opus-4.7",
+  "x-ai/grok-4.3",
+  "deepseek/deepseek-v4-pro",
+  "zai-glm-5",
+  "anthropic/claude-opus-4.8",
   "google/gemini-3.1-pro-preview",
-  "x-ai/grok-4.3"
+  "google/gemini-3.5-flash",
+  "openai/gpt-5.5"
 ]'
+
+# Choose 2 random providers from the list
+PROVIDERS=$(echo "$PROVIDERS" | jq -r '.[]' | shuf -n 2 | jq -R . | jq -s .)
 
 # Backup existing outFile before overriding
 if [ -f "$outFile" ]; then
