@@ -22,9 +22,12 @@ for model, provider, effort in [
     ("moonshotai/kimi-k2.6", "moonshotai", "reasoning-enabled"), # reasoning-disabled
     ("anthropic/claude-opus-4.6", "anthropic", "reasoning-max"), # reasoning-enabled reasoning-high reasoning-max // or reasoning-disabled
     ("anthropic/claude-opus-4.7", "anthropic", "reasoning-max"), # reasoning-enabled reasoning-xhigh reasoning-max // or reasoning-disabled
+    ("anthropic/claude-opus-4.8", "anthropic", "reasoning-max"), # reasoning-enabled reasoning-xhigh reasoning-max // or reasoning-disabled
     ("google/gemini-3.1-pro-preview", "google-vertex", "high"), # low medium high
+    ("google/gemini-3.5-flash", "google-vertex", "high"), # low medium high
     ("minimax/minimax-m2.7", "minimax", "reasoning-enabled"),
     ("x-ai/grok-4.3", "xai", "reasoning-enabled"),
+    ("openrouter/fusion", "", "reasoning-enabled"),
 ]:
     PROVIDER_MODELS[model] = {
         "api_url": "https://openrouter.ai/api/v1/chat/completions",
@@ -36,6 +39,8 @@ for model, provider, effort in [
         },
         "effort": effort,
     }
+    if model in ["openrouter/fusion"]:
+        del PROVIDER_MODELS[model]["provider"]
 
 SYSTEM_PROMPT = """You are a master aphorism writer who has deeply studied the inner logic of wisdom traditions, Stoic philosophy, and the compressed sayings of great thinkers across centuries. You also carry the sensibility of sharp comedians, dry essayists, and clear-eyed observers of ordinary human folly — people who noticed what everyone else walked past. You understand what separates a forgettable line from one that reshapes how a person thinks about their day, their habits, or their life.
 
